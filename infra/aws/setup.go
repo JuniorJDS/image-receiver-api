@@ -8,14 +8,13 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 )
 
-var client *session.Session
+var sess *session.Session
 
-func Client() *session.Session {
+func Session() *session.Session {
 	sess, err := session.NewSession(&aws.Config{
 		Region:      aws.String("us-west-2"),
 		Credentials: credentials.NewSharedCredentials("", "dev-go-account"),
-	},
-	)
+	})
 	if err != nil {
 		log.Printf("Error to connect to aws: %s\n", err.Error())
 	}
@@ -23,9 +22,9 @@ func Client() *session.Session {
 	return sess
 }
 
-func GetClientAWS() *session.Session {
-	if client == nil {
-		client = Client()
+func GetSessionAWS() *session.Session {
+	if sess == nil {
+		sess = Session()
 	}
-	return client
+	return sess
 }
