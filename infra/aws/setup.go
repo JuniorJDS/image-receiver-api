@@ -12,7 +12,7 @@ var sess *session.Session
 
 func Session() *session.Session {
 	sess, err := session.NewSession(&aws.Config{
-		Region:      aws.String("us-west-2"),
+		Region:      aws.String("us-east-2"),
 		Credentials: credentials.NewSharedCredentials("", "dev-go-account"),
 	})
 	if err != nil {

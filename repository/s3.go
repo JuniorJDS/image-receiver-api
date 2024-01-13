@@ -1,11 +1,12 @@
 package repository
 
 import (
+	"fmt"
 	"image-receiver-api/infra/aws"
 	"mime/multipart"
-	"os"
 
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/google/uuid"
 )
 
 type S3Repository struct {
@@ -13,8 +14,6 @@ type S3Repository struct {
 }
 
 func NewS3Repository() *S3Repository {
-	// svc := s3.New(aws.Client())
-	// uploader := s3manager.NewUploader(aws.Client())
 	session := aws.GetSessionAWS()
 	uploader := s3manager.NewUploader(session, func(u *s3manager.Uploader) {
 		u.PartSize = 64 * 1024 * 1024
@@ -25,15 +24,24 @@ func NewS3Repository() *S3Repository {
 }
 
 func (s *S3Repository) Save(file *multipart.FileHeader) error {
-	f, _ := os.Open(file.Filename)
+	f, err := file.Open()
+	if err != nil {
+		return fmt.Errorf("failed to open file: %s", err.Error())
+	}
 	defer f.Close()
-	_, err := s.Uploader.Upload(&s3manager.UploadInput{
-		Bucket: nil,
-		Key:    nil,
+
+	bucket := "images-claim-check"
+	UUID := uuid.NewString()
+	destination := fmt.Sprintf("raw/%s/%s", UUID, file.Filename)
+
+	_, err = s.Uploader.Upload(&s3manager.UploadInput{
+		Bucket: &bucket,
+		Key:    &destination,
 		Body:   f,
 	})
+
 	if err != nil {
-		return nil
+		return fmt.Errorf("failed to upload file to S3. Error: %s", err.Error())
 	}
 	return nil
 }
