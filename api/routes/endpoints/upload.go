@@ -28,5 +28,7 @@ func (f *FileHandle) Upload(c *fiber.Ctx) error {
 		return c.SendString(err.Error())
 	}
 
+	// TODO: publish message in topic
+
 	return c.SendString(file.Filename)
 }
