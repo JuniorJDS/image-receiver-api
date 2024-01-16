@@ -1,34 +1,32 @@
 package endpoints
 
 import (
-	"image-receiver-api/repository"
+	"image-receiver-api/service"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-type FileHandle struct {
-	Bucket repository.S3Repository
+type UploadRoute struct {
+	FileHandlerService service.FileHandler
 }
 
-func NewFileHandle() *FileHandle {
-	return &FileHandle{
-		Bucket: *repository.NewS3Repository(),
+func NewUploadRoute() *UploadRoute {
+	return &UploadRoute{
+		FileHandlerService: *service.NewFileHandler(),
 	}
 }
 
-func (f *FileHandle) Upload(c *fiber.Ctx) error {
+func (f *UploadRoute) Upload(c *fiber.Ctx) error {
 	// TODO: error handler
 	file, err := c.FormFile("file")
 	if err != nil {
 		return nil
 	}
 
-	err = f.Bucket.Save(file)
+	err = f.FileHandlerService.Process(file)
 	if err != nil {
 		return c.SendString(err.Error())
 	}
 
-	// TODO: publish message in topic
-
-	return c.SendString(file.Filename)
+	return c.SendString("Ok!")
 }

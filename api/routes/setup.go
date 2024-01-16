@@ -13,8 +13,8 @@ func Routes(app *fiber.App) {
 	r := app.Group(settings["API_V1"])
 
 	h := endpoints.NewHello()
-	fileHandler := endpoints.NewFileHandle()
+	uploadRoute := endpoints.NewUploadRoute()
 
 	r.Get("/hello", h.GetHello)
-	r.Post("/upload", fileHandler.Upload)
+	r.Post("/upload", uploadRoute.Upload)
 }

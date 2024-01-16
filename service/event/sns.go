@@ -1,12 +1,16 @@
 package event
 
 import (
-	"flag"
+	"encoding/json"
 	"fmt"
+	"image-receiver-api/config"
 	"image-receiver-api/infra/aws"
+	"image-receiver-api/schema"
 
 	"github.com/aws/aws-sdk-go/service/sns"
 )
+
+var settings = config.GetSettings()
 
 type EventSNS struct {
 	SnsClient *sns.SNS
@@ -20,14 +24,19 @@ func NewEventSNS() *EventSNS {
 	}
 }
 
-func (s *EventSNS) Publish() error {
-	msgPtr := flag.String("m", "", "The message to send to the subscribed users of the topic")
-	topicPtr := flag.String("t", "", "The ARN of the topic to which the user subscribes")
+func (s *EventSNS) Publish(message schema.Message) error {
+	topicPtr := settings["TOPIC"]
+
+	messageByte, err := json.Marshal(message)
+	if err != nil {
+		return err
+	}
+	messageString := string(messageByte)
 
 	result, err := s.SnsClient.Publish(
 		&sns.PublishInput{
-			Message:  msgPtr,
-			TopicArn: topicPtr,
+			Message:  &messageString,
+			TopicArn: &topicPtr,
 		},
 	)
 	if err != nil {

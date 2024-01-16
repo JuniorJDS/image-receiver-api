@@ -18,9 +18,8 @@ func GetSettings() map[string]string {
 	settings["API_V1"] = "/api/v1"
 	settings["PORT"] = "5000"
 
-	// S3
 	settings["BUCKET"] = os.Getenv("BUCKET")
-	// settings["KEY"] = os.Getenv("KEY")
+	settings["TOPIC"] = os.Getenv("TOPIC")
 
 	return settings
 }

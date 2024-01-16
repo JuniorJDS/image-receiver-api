@@ -2,16 +2,19 @@ package repository
 
 import (
 	"fmt"
+	"image-receiver-api/config"
 	"image-receiver-api/infra/aws"
 	"mime/multipart"
 
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
-	"github.com/google/uuid"
 )
 
 type S3Repository struct {
 	Uploader *s3manager.Uploader
+	Bucket   string
 }
+
+var settings = config.GetSettings()
 
 func NewS3Repository() *S3Repository {
 	session := aws.GetSessionAWS()
@@ -20,22 +23,21 @@ func NewS3Repository() *S3Repository {
 	})
 	return &S3Repository{
 		Uploader: uploader,
+		Bucket:   settings["BUCKET"],
 	}
 }
 
-func (s *S3Repository) Save(file *multipart.FileHeader) error {
+func (s *S3Repository) Save(file *multipart.FileHeader, ID string) error {
 	f, err := file.Open()
 	if err != nil {
 		return fmt.Errorf("failed to open file: %s", err.Error())
 	}
 	defer f.Close()
 
-	bucket := "images-claim-check"
-	UUID := uuid.NewString()
-	destination := fmt.Sprintf("raw/%s/%s", UUID, file.Filename)
+	destination := fmt.Sprintf("raw/%s/%s", ID, file.Filename)
 
 	_, err = s.Uploader.Upload(&s3manager.UploadInput{
-		Bucket: &bucket,
+		Bucket: &s.Bucket,
 		Key:    &destination,
 		Body:   f,
 	})
