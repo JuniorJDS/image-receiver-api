@@ -3,9 +3,10 @@ package repository
 import (
 	"fmt"
 	"image-receiver-api/config"
-	"image-receiver-api/infra/aws"
+	infra "image-receiver-api/infra/aws"
 	"mime/multipart"
 
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
@@ -17,7 +18,7 @@ type S3Repository struct {
 var settings = config.GetSettings()
 
 func NewS3Repository() *S3Repository {
-	session := aws.GetSessionAWS()
+	session := infra.GetSessionAWS()
 	uploader := s3manager.NewUploader(session, func(u *s3manager.Uploader) {
 		u.PartSize = 64 * 1024 * 1024
 	})
@@ -37,13 +38,13 @@ func (s *S3Repository) Save(file *multipart.FileHeader, ID string) error {
 	destination := fmt.Sprintf("raw/%s/%s", ID, file.Filename)
 
 	_, err = s.Uploader.Upload(&s3manager.UploadInput{
-		Bucket: &s.Bucket,
-		Key:    &destination,
+		Bucket: aws.String(s.Bucket),
+		Key:    aws.String(destination),
 		Body:   f,
 	})
 
 	if err != nil {
-		return fmt.Errorf("failed to upload file to S3. Error: %s", err.Error())
+		return fmt.Errorf("failed to upload file to S3 in Bucket: %s with Error: %s", s.Bucket, err.Error())
 	}
 	return nil
 }

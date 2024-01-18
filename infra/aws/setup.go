@@ -1,6 +1,7 @@
-package aws
+package infra
 
 import (
+	"image-receiver-api/config"
 	"log"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -10,11 +11,23 @@ import (
 
 var sess *session.Session
 
+var settings = config.GetSettings()
+
 func Session() *session.Session {
+	endpoint := aws.String("http://localhost:4566/")
+	s3ForcePathStyle := aws.Bool(true)
+
 	sess, err := session.NewSession(&aws.Config{
-		Region:      aws.String("us-east-2"),
-		Credentials: credentials.NewSharedCredentials("", "dev-go-account"),
+		Endpoint: endpoint,
+		Region:   aws.String(settings["REGION"]),
+		Credentials: credentials.NewStaticCredentials(
+			settings["AWS_ACCESS_KEY_ID"],
+			settings["AWS_SECRET_ACCESS_KEY"],
+			"",
+		),
+		S3ForcePathStyle: s3ForcePathStyle,
 	})
+
 	if err != nil {
 		log.Printf("Error to connect to aws: %s\n", err.Error())
 	}

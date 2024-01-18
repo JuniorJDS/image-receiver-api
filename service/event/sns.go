@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"image-receiver-api/config"
-	"image-receiver-api/infra/aws"
+	infra "image-receiver-api/infra/aws"
 	"image-receiver-api/schema"
 
 	"github.com/aws/aws-sdk-go/service/sns"
@@ -17,7 +17,7 @@ type EventSNS struct {
 }
 
 func NewEventSNS() *EventSNS {
-	session := aws.GetSessionAWS()
+	session := infra.GetSessionAWS()
 	svc := sns.New(session)
 	return &EventSNS{
 		SnsClient: svc,
