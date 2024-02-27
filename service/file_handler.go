@@ -11,13 +11,13 @@ import (
 
 type FileHandler struct {
 	Bucket repository.S3Repository
-	Event  event.EventSNS
+	Event  event.IEvent
 }
 
 func NewFileHandler() *FileHandler {
 	return &FileHandler{
 		Bucket: *repository.NewS3Repository(),
-		Event:  *event.NewEventSNS(),
+		Event:  event.NewEventAmqp(),
 	}
 }
 
