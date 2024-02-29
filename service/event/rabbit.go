@@ -31,8 +31,8 @@ func (e *EventAmqp) Publish(message schema.Message) error {
 
 	err = e.Channel.PublishWithContext(
 		ctxTimeout,
-		"exName",
-		"",
+		"go-images",
+		"golang-api",
 		false,
 		false,
 		amqp.Publishing{

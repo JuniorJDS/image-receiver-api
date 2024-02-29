@@ -9,17 +9,15 @@ var ch *amqp.Channel
 func channel() *amqp.Channel {
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	if err != nil {
+		conn.Close()
 		panic(1)
 	}
-
-	defer conn.Close()
 
 	ch, err = conn.Channel()
 	if err != nil {
+		ch.Close()
 		panic(1)
 	}
-	defer ch.Close()
-
 	return ch
 }
 
