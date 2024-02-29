@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   localstack:
     image: localstack/localstack
@@ -24,3 +24,11 @@ services:
       "
         aws --endpoint-url=http://localstack:4566 s3api create-bucket --bucket images-claim-check --region us-east-1
       "
+  rabbitmq:
+    build:
+      context: ./
+      dockerfile: rabbitmq.Dockerfile
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
