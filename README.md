@@ -43,6 +43,8 @@ curl -X POST -H "Content-Type: multipart/form-data" -F "file=@/path/to/your/imag
 
 ```
 
+![Upload Sequence](/receiver-api.png)
+
 ### event-notification
 
 Upon successfully saving the image to the S3 bucket, the API will send a message event via RabbitMQ. Ensure that the RabbitMQ configuration is correctly set up to receive and process these events.
