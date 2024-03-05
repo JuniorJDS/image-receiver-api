@@ -14,8 +14,13 @@ var sess *session.Session
 var settings = config.GetSettings()
 
 func Session() *session.Session {
-	endpoint := aws.String("http://localhost:4566/")
-	s3ForcePathStyle := aws.Bool(true)
+	var endpoint *string
+	var s3ForcePathStyle *bool
+
+	if settings["AWS_ENDPOINT"] != "" {
+		endpoint = aws.String(settings["AWS_ENDPOINT"])
+		s3ForcePathStyle = aws.Bool(true)
+	}
 
 	sess, err := session.NewSession(&aws.Config{
 		Endpoint: endpoint,

@@ -1,13 +1,16 @@
 package infra
 
 import (
+	"image-receiver-api/config"
+
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 var ch *amqp.Channel
+var settings = config.GetSettings()
 
 func channel() *amqp.Channel {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial(settings["RABBITMQ_URL"])
 	if err != nil {
 		conn.Close()
 		panic(1)

@@ -23,6 +23,8 @@ func GetSettings() map[string]string {
 	settings["AWS_ACCESS_KEY_ID"] = os.Getenv("AWS_ACCESS_KEY_ID")
 	settings["AWS_SECRET_ACCESS_KEY"] = os.Getenv("AWS_SECRET_ACCESS_KEY")
 	settings["REGION"] = os.Getenv("REGION")
+	settings["AWS_ENDPOINT"] = os.Getenv("AWS_ENDPOINT")
+	settings["RABBITMQ_URL"] = os.Getenv("RABBITMQ_URL")
 
 	return settings
 }
